@@ -31,4 +31,5 @@ PASO 3 - EN EL JUEGO
 
   Listo. Pasa el mouse por una celda y apreta tus teclas de siempre.
 
-La guia completa esta en GUIA.md
+La guia completa esta en README.md, y se ve directamente en la
+portada del repositorio.
