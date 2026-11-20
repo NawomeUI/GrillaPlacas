@@ -251,9 +251,16 @@ end
 -- En 3.3.5 IsHarmfulSpell contesta mal para la mayoria de los hechizos puestos
 -- en barra, asi que no se usa como filtro duro. Solo se descarta lo que el cliente
 -- afirma que es de ayuda.
+local function pedir(fn, ...)
+	if type(fn) ~= "function" then return nil end
+	local ok, a, b, c = pcall(fn, ...)
+	if ok then return a, b, c end
+	return nil
+end
+
 local function esOfensivo(nom)
-	if IsHarmfulSpell and IsHarmfulSpell(nom) then return true end
-	if IsHelpfulSpell and IsHelpfulSpell(nom) then return false end
+	if pedir(IsHarmfulSpell, nom) then return true end
+	if pedir(IsHelpfulSpell, nom) then return false end
 	return true
 end
 
@@ -280,7 +287,7 @@ end
 local function conocidos()
 	local set, i = {}, 1
 	while i <= 1024 do
-		local nom = GetSpellName and GetSpellName(i, "spell")
+		local nom = pedir(GetSpellName, i, "spell")
 		if not nom then break end
 		set[strlower(nom)] = nom
 		i = i + 1
@@ -305,7 +312,7 @@ end
 -- Lee el cuerpo del macro y saca el hechizo que lanza
 local function hechizoDeMacro(id, set)
 	if not GetMacroInfo then return nil end
-	local _, _, cuerpo = GetMacroInfo(id)
+	local _, _, cuerpo = pedir(GetMacroInfo, id)
 	if not cuerpo then return nil end
 	for linea in string.gmatch(cuerpo, "[^\r\n]+") do
 		local l = strtrim(linea)
@@ -335,7 +342,7 @@ end
 -- Devuelve nombre, y si hubo que desempatar sin textura (menos confiable).
 local function hechizoDeSlot(slot, set)
 	if not slot then return nil end
-	local tipo, id = GetActionInfo(slot)
+	local tipo, id = pedir(GetActionInfo, slot)
 	if tipo == "macro" and id and id > 0 then
 		if not set then set = conocidos() end
 		local h = hechizoDeMacro(id, set)
@@ -346,7 +353,7 @@ local function hechizoDeSlot(slot, set)
 
 	local nomId, _, icoId = infoPorId(id)
 	local nomIdx, _, icoIdx = infoPorIndice(id)
-	local icoAccion = GetActionTexture and GetActionTexture(slot)
+	local icoAccion = pedir(GetActionTexture, slot)
 
 	local elegido, dudoso
 	if icoAccion then
@@ -621,14 +628,14 @@ function GP:Volcar()
 				local nomId, _, texId = infoPorId(id)
 				local nomIdx, _, texIdx = infoPorIndice(id)
 				local cuerpo
-				if tipo == "macro" and id and GetMacroInfo then
-					local _, _, c = GetMacroInfo(id)
+				if tipo == "macro" and id then
+					local _, _, c = pedir(GetMacroInfo, id)
 					cuerpo = c
 				end
 				filas[#filas + 1] = {
 					tecla1 = k1, tecla2 = k2, accion = accion,
 					slot = slot, marco = marco, tipo = tipo, id = id,
-					texAccion = (slot and GetActionTexture) and GetActionTexture(slot) or nil,
+					texAccion = slot and pedir(GetActionTexture, slot) or nil,
 					nomPorId = nomId, texPorId = texId,
 					nomPorIndice = nomIdx, texPorIndice = texIdx,
 					macro = cuerpo,

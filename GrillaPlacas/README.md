@@ -251,6 +251,10 @@ No es el teclado. Cuando un comando de chat de cualquier addon tira un error de
 Lua, el juego aborta el envio del mensaje y parece que Enter no responde.
 Instala BugSack y BugGrabber: el ultimo error te dice que addon fue.
 
+GrillaPlacas no puede causarte esto. Sus comandos estan envueltos de forma que
+si algo falla te lo dice por pantalla y el chat sigue funcionando. Si te pasa,
+el culpable es otro addon.
+
 ### En combate no me deja cambiar cosas
 
 Es una restriccion del juego, no del addon. Los bindeos y el rearmado de la

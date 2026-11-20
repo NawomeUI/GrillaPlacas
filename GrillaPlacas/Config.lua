@@ -115,7 +115,11 @@ end
 
 SLASH_GRILLAPLACAS1 = "/grilla"
 SLASH_GRILLAPLACAS2 = "/gp"
-SlashCmdList["GRILLAPLACAS"] = function(msg)
+-- El cuerpo real va envuelto en pcall mas abajo. Si un comando revienta,
+-- el juego aborta ChatEdit_SendText y parece que la tecla Enter dejo de
+-- andar. Atrapando el error, el chat sigue funcionando y el problema se
+-- reporta en pantalla.
+local function ejecutarComando(msg)
 	msg = strtrim(msg or "")
 	local cmd, resto = string.match(msg, "^(%S*)%s*(.-)$")
 	cmd = strlower(cmd or "")
@@ -249,5 +253,13 @@ SlashCmdList["GRILLAPLACAS"] = function(msg)
 
 	else
 		ayuda()
+	end
+end
+
+SlashCmdList["GRILLAPLACAS"] = function(msg)
+	local ok, err = pcall(ejecutarComando, msg)
+	if not ok then
+		GP:Msg("|cffff5555Se rompio el comando:|r " .. tostring(err))
+		GP:Msg("El chat sigue andando. Pasale este texto a quien te dio el addon.")
 	end
 end

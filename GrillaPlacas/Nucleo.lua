@@ -605,12 +605,19 @@ local function refrescar()
 end
 
 local motor = CreateFrame("Frame")
+-- El refresco corre 10 veces por segundo. Si algo falla adentro, sin pcall
+-- serian 10 errores por segundo. Se reporta una sola vez y se apaga.
 motor:SetScript("OnUpdate", function(self, elapsed)
-	if not GP.listo then return end
+	if not GP.listo or GP.refrescoRoto then return end
 	acum = acum + elapsed
 	if acum < 0.1 then return end
 	acum = 0
-	refrescar()
+	local ok, err = pcall(refrescar)
+	if not ok then
+		GP.refrescoRoto = true
+		GP:Msg("|cffff5555Se rompio el refresco de la grilla:|r " .. tostring(err))
+		GP:Msg("Lo apague para no llenarte el chat. Hace /reload para reactivarlo.")
+	end
 end)
 
 ------------------------------------------------------------------
