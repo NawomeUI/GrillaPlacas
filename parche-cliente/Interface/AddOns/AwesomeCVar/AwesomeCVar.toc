@@ -1,0 +1,25 @@
+## Interface: 30300
+## Title: Awesome CVar Manager
+## Notes: Settings window for the Awesome WotLK client mod
+## Author: Widget, Crum
+## Version: 3.1
+## SavedVariables: AwesomeCVarDB
+
+# Locales: enUS first, it is the fallback for missing keys
+Locales\enUS.lua
+Locales\deDE.lua
+Locales\esMX.lua
+Locales\frFR.lua
+Locales\koKR.lua
+Locales\ptBR.lua
+Locales\ruRU.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+# Skins
+Skins\ElvUI.lua
+
+# Core
+Constants.lua
+UI.lua
+Core.lua
