@@ -259,6 +259,14 @@ local function pedir(fn, ...)
 end
 
 local function esOfensivo(nom)
+	-- Un hechizo que no tiene rango no se lanza sobre nadie: invocaciones,
+	-- buffs propios, piedras. Bindearlos al mouseover no sirve de nada y
+	-- solo ensucia la lista. SpellHasRange es confiable para esto, al
+	-- reves que IsHarmfulSpell.
+	if SpellHasRange then
+		local ok, tieneRango = pcall(SpellHasRange, nom)
+		if ok and tieneRango == false then return false end
+	end
 	if pedir(IsHarmfulSpell, nom) then return true end
 	if pedir(IsHelpfulSpell, nom) then return false end
 	return true

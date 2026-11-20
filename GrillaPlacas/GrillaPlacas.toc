@@ -2,7 +2,7 @@
 ## Title: GrillaPlacas
 ## Notes: Grilla de placas enemigas con celdas clickeables para dotear sin cambiar de objetivo. Requiere cliente con AwesomeWotlkLib.dll.
 ## Author: Nahuel
-## Version: 1.11
+## Version: 1.12
 ## SavedVariables: GrillaPlacasDB
 ## SavedVariablesPerCharacter: GrillaPlacasPJ
 
