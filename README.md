@@ -22,15 +22,19 @@ tokens y el casteo sobre las celdas no engancha.
 
 ### Instalacion del parche
 
-Todo lo que necesitas esta en la carpeta `1-PARCHE-CLIENTE` de este paquete.
+Todo lo que necesitas esta en la carpeta `parche-cliente` de este repositorio.
+
+Para bajarlo todo de una: boton verde **Code** arriba a la derecha, y despues
+**Download ZIP**.
 
 1. **Cerra el juego.**
 2. Guarda una copia de tu `AwesomeWotlkLib.dll` actual si ya tenias una.
-3. Copia a la raiz de tu carpeta del juego, donde esta el `Wow.exe`:
+3. Copia a la raiz de tu carpeta del juego, donde esta el `Wow.exe`,
+   los tres archivos que estan en `parche-cliente`:
    - `AwesomeWotlkLib.dll`
    - `skia.dll`
    - `AwesomeWotlkPatch.exe`
-4. Copia la carpeta `Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
+4. Copia `parche-cliente\Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
 5. **Arrastra tu `Wow.exe` sobre `AwesomeWotlkPatch.exe`.** Esto hace dos cosas:
    engancha la DLL al ejecutable y le activa el modo LAA, que le permite usar
    hasta 4 GB de memoria en vez de 2.
@@ -67,7 +71,7 @@ paquete: https://github.com/noname08662/awesome_wotlk/releases
 
 ## 2. Instalacion del addon
 
-Extrae la carpeta `GrillaPlacas` de `2-ADDON` dentro de tu
+Copia la carpeta `GrillaPlacas` de este repositorio dentro de tu
 `Interface\AddOns`.
 
 Te tiene que quedar asi:
