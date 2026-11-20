@@ -11,30 +11,31 @@ mantener DoTs en varios objetivos a la vez.
 
 ---
 
-## 1. Requisito: el parche del cliente
+## 1. Requisito: aplicar AwesomeWotlk al cliente
 
 GrillaPlacas **no funciona con un cliente 3.3.5a de fabrica**. Necesita
-AwesomeWotlk, un parche que le agrega al juego la capacidad de identificar cada
-placa enemiga por separado.
+**AwesomeWotlk**, un parche que le agrega al juego la capacidad de identificar
+cada placa enemiga por separado.
+
+Esta todo en la carpeta `awesome-wotlk-v39` de este repositorio. Aplicarlo son
+cuatro copias y un arrastre, no hay instalador ni nada que configurar.
 
 Hace falta la **version 39 o superior**. Las anteriores no traen el registro de
 tokens y el casteo sobre las celdas no engancha.
 
-### Instalacion del parche
+### Como aplicarlo
 
-Todo lo que necesitas esta en la carpeta `parche-cliente` de este repositorio.
-
-Para bajarlo todo de una: boton verde **Code** arriba a la derecha, y despues
+Para bajar todo de una: boton verde **Code** arriba a la derecha, y despues
 **Download ZIP**.
 
 1. **Cerra el juego.**
 2. Guarda una copia de tu `AwesomeWotlkLib.dll` actual si ya tenias una.
 3. Copia a la raiz de tu carpeta del juego, donde esta el `Wow.exe`,
-   los tres archivos que estan en `parche-cliente`:
+   los tres archivos que estan en `awesome-wotlk-v39`:
    - `AwesomeWotlkLib.dll`
    - `skia.dll`
    - `AwesomeWotlkPatch.exe`
-4. Copia `parche-cliente\Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
+4. Copia `awesome-wotlk-v39\Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
 5. **Arrastra tu `Wow.exe` sobre `AwesomeWotlkPatch.exe`.** Esto hace dos cosas:
    engancha la DLL al ejecutable y le activa el modo LAA, que le permite usar
    hasta 4 GB de memoria en vez de 2.
