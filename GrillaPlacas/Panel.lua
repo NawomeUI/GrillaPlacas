@@ -278,8 +278,8 @@ function GP:CrearPanel()
 	-- Hoja 3: Teclas
 	------------------------------------------------------------------
 	local t = p.hojas[3]
-	etiqueta(t, "Castear sobre la celda que tengas debajo del mouse,", 22, -6)
-	etiqueta(t, "apretando tus teclas de siempre. Sin macros.", 22, -22)
+	etiqueta(t, "Castear sobre lo que tengas debajo del mouse apretando", 22, -6)
+	etiqueta(t, "tus teclas de siempre, sin macros. Viene apagado.", 22, -22)
 
 	p.cTeclas = check(t, "Activado", 20, -44, nil, function(v)
 		GP:ActivarTeclas(v)
@@ -343,14 +343,10 @@ function GP:CrearPanel()
 	boton(t, "Diagnostico de barras", 240, -348, 170, function() GP:EscaneoTeclas() end)
 	boton(t, "Volcar a disco", 240, -378, 170, function() GP:Volcar() end)
 	boton(t, "Levantar vetos", 22, -378, 170, function() GP:RestaurarVetadas() GP:RefrescarPanel() end)
-	etiqueta(t, "Como manda el hechizo al bicho de abajo del mouse", 22, -412, "GameFontNormal")
-	p.bModoHech = boton(t, "Castear directo", 22, -432, 170, function()
-		GP:ModoTeclas("hechizo") GP:RefrescarPanel()
-	end)
-	p.bModoObj = boton(t, "Targetear y volver", 240, -432, 170, function()
-		GP:ModoTeclas("objetivo") GP:RefrescarPanel()
-	end)
-	etiqueta(t, "Targetear y volver anda con cualquier barra, macro o item.", 22, -458)
+	etiqueta(t, "|cffffaa00Esto es opcional.|r Si ya usas tus propios macros de", 22, -412)
+	etiqueta(t, "mouseover, dejalo apagado: andan mejor y no se pisan.", 22, -428)
+	etiqueta(t, "Nunca te cambia el objetivo: si no hay nada hostil debajo", 22, -450)
+	etiqueta(t, "del mouse, tu tecla hace exactamente lo de siempre.", 22, -466)
 	boton(t, "Borrar toda la lista", 22, -348, 170, function()
 		GP:LimpiarTeclas()
 		GP:RefrescarPanel()
@@ -493,10 +489,6 @@ function GP:RefrescarPanel()
 	else
 		p.lblMasTeclas:SetText("")
 	end
-
-	local mt = GP.pj.teclasModo or "hechizo"
-	if p.bModoHech then p.bModoHech:Marcar(mt == "hechizo") end
-	if p.bModoObj then p.bModoObj:Marcar(mt == "objetivo") end
 
 	-- clicks
 	p.btnModo:SetText("Casteo: " .. l.modoCast)

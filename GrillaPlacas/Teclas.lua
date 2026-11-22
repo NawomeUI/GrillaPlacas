@@ -108,22 +108,10 @@ function GP:AplicarTeclas(silencioso)
 			local g = GP.pj.teclasBoton and GP.pj.teclasBoton[clave]
 			if g and esVisible(_G[g]) then marco = g end
 		end
-		local modo = GP.pj.teclasModo or "hechizo"
-
-		if modo == "objetivo" and marco then
-			-- Modo a prueba de todo: no hace falta saber que hechizo es.
-			-- Si hay algo hostil bajo el mouse lo targetea, aprieta tu propio
-			-- boton y vuelve al objetivo anterior. Funciona con hechizos,
-			-- macros, items y habilidades de mascota, y con cualquier addon
-			-- de barras, porque nunca interpreta el contenido del slot.
-			b:SetAttribute("macrotext",
-				"/target [@mouseover,harm,nodead]" ..
-				"\n/click " .. marco ..
-				"\n/targetlasttarget [@mouseover,harm,nodead]")
-
-		elseif marco then
-			-- Modo hechizo: castea directo sin tocar tu objetivo. Si no hay
-			-- nada hostil bajo el mouse, clickea tu boton y tu macro corre igual.
+		if marco then
+			-- Castea directo sobre lo que tengas bajo el mouse y nunca toca
+			-- tu objetivo. Si no hay nada hostil abajo, clickea tu propio
+			-- boton y tu macro corre igual que siempre.
 			b:SetAttribute("macrotext",
 				"/cast [@mouseover,harm,nodead] " .. hechizo ..
 				"\n/stopmacro [@mouseover,harm,nodead]" ..
@@ -166,24 +154,6 @@ function GP:PonerTecla(clave, hechizo)
 	t[clave] = hechizo
 	GP:AplicarTeclas()
 	GP:Msg("Tecla |cffffd100" .. clave .. "|r castea |cffffd100" .. hechizo .. "|r sobre lo que tengas debajo del mouse.")
-end
-
-function GP:ModoTeclas(m)
-	if InCombatLockdown() then
-		GP:Msg("Sali de combate y volve a probar.")
-		return
-	end
-	if m ~= "hechizo" and m ~= "objetivo" then
-		GP:Msg("Modo actual: " .. (GP.pj.teclasModo or "hechizo") .. ". Opciones: hechizo, objetivo")
-		return
-	end
-	GP.pj.teclasModo = m
-	GP:AplicarTeclas(true)
-	if m == "objetivo" then
-		GP:Msg("Modo |cffffd100objetivo|r: targetea lo que tengas bajo el mouse, aprieta tu boton y vuelve. Anda con cualquier cosa.")
-	else
-		GP:Msg("Modo |cffffd100hechizo|r: castea directo sin tocar tu objetivo.")
-	end
 end
 
 function GP:ListarTeclas()
@@ -601,6 +571,25 @@ function GP:RestaurarVetadas()
 	for _ in pairs(ignoradas()) do n = n + 1 end
 	GP.pj.teclasIgnoradas = {}
 	GP:Msg("Se levantaron " .. n .. " vetos. Tira /grilla auto para que vuelvan.")
+end
+
+function GP:ActivarTeclas(on)
+	if InCombatLockdown() then
+		GP:Msg("Sali de combate y volve a probar.")
+		return
+	end
+	GP.pj.teclasOn = (on and true) or false
+	local n = GP:AplicarTeclas(true)
+	if GP.pj.teclasOn then
+		if n == 0 then
+			GP:Msg("Activado, pero no hay ninguna tecla en la lista. Tira |cffffd100/grilla auto|r para que las busque.")
+		else
+			GP:Msg("Mouseover por tecla |cff55ff55activado|r. Teclas tomadas: |cffffd100" .. n .. "|r")
+		end
+	else
+		GP:Msg("Mouseover por tecla |cffff5555apagado|r. Tus teclas vuelven a hacer exactamente lo de siempre.")
+	end
+	GP:RefrescarPanel()
 end
 
 function GP:LimpiarTeclas()

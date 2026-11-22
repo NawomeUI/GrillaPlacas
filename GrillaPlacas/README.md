@@ -86,46 +86,47 @@ Tres pasos y ya esta andando.
 
 1. Escribi `/grilla` para abrir el panel.
 2. Pestana **Grilla**, elegi un preset: Lista, Dos columnas o Compacto.
-3. Pestana **Teclas**, boton **Escanear barras**.
+3. Armate un macro de mouseover por cada DoT (abajo esta el modelo) y poneselo
+   a las teclas que ya usas.
 
-Listo. Pasa el mouse por una celda de la grilla y apreta tus teclas de siempre.
-El hechizo va al bicho que tengas debajo del cursor. Con el mouse en el aire,
-las teclas funcionan exactamente como antes.
+Listo. Pasa el mouse por una celda de la grilla, apreta tu tecla y el DoT va a
+ese bicho sin que cambies de objetivo.
 
 ---
 
-## 4. Las dos formas de castear sobre la grilla
+## 4. Como le pegas a las celdas
 
-En la pestana **Teclas**, abajo del todo, elegis como manda el hechizo.
+### Con tus propios macros de mouseover (lo recomendado)
 
-### Targetear y volver
-
-El addon targetea lo que tengas bajo el mouse, aprieta tu propio boton de la
-barra y vuelve al objetivo anterior.
+Es lo mas simple y lo que menos se rompe. Un macro por hechizo, con la forma
+de siempre:
 
 ```
-/target [@mouseover,harm,nodead]
-/click BT4Button7
-/targetlasttarget [@mouseover,harm,nodead]
+#showtooltip
+/cast [@mouseover,harm,nodead][] Corruption
 ```
 
-Ventaja: **anda con cualquier cosa**. Hechizos, macros, items, habilidades de
-mascota, y con cualquier addon de barras, porque nunca mira que hay adentro del
-slot. Es el modo recomendado.
+El `[@mouseover,harm,nodead]` manda el hechizo a lo que tengas debajo del
+cursor si es un enemigo vivo. El `[]` del final es el que hace que, con el
+mouse en el aire, la tecla siga funcionando sobre tu objetivo normal.
 
-Precio, y no es menor: **el `[@mouseover]` vale para cualquier cosa hostil
-bajo el cursor, no solo la grilla**. Si pasas el mouse por encima de un bicho
-del mundo mientras apretas tus teclas de rotacion, el objetivo te cambia sin
-que hayas clickeado nada. Y como el objetivo cambia y vuelve dos veces por
-tecleo, los indicadores de rango de toda la barra parpadean.
+Las celdas de la grilla cuentan como mouseover, asi que pasas el mouse por una
+celda, apretas tu tecla y el DoT va ahi. Tu objetivo no se mueve nunca.
 
-Por eso este modo no viene activado por defecto. Usalo solo si el otro no te
-identifica bien los hechizos, y teniendo presente lo de arriba.
+### Con clicks sobre la celda
 
-### Castear directo (el que viene por defecto)
+En la pestana **Clicks** le asignas un hechizo a cada boton del mouse (izq,
+der, rueda, y las combinaciones con shift, ctrl y alt). Sirve para rellenar, o
+para los hechizos que no entran en la rotacion de teclas.
 
-El addon identifica que hechizo tenes en cada tecla y lo lanza al mouseover sin
-tocar tu objetivo.
+El casteo por click usa la unidad fija de la celda, no el mouseover, asi que no
+hay forma de que le pegue a otro bicho.
+
+### Mouseover automatico sin macros (opcional, viene apagado)
+
+En la pestana **Teclas** hay un escaneo que lee tus bindeos del juego, se fija
+que hechizo tenes en cada tecla y te la reescribe sola con la forma de arriba.
+Sirve si no tenes ganas de armar macros.
 
 ```
 /cast [@mouseover,harm,nodead] Immolate
@@ -133,26 +134,22 @@ tocar tu objetivo.
 /click BT4Button7
 ```
 
-Ventaja: no toca tu objetivo en ningun momento.
+Nunca toca tu objetivo: si no hay nada hostil debajo del mouse, clickea tu
+propio boton de la barra y tu macro corre como siempre.
 
-Ventaja grande: **nunca te toca el objetivo**, asi que no tenes el problema del
-otro modo.
+Dos avisos antes de prenderlo:
 
-Precio: depende de identificar bien el hechizo. El addon lo valida contra tu
-libro de hechizos y comparando la textura del boton, asi que acierta en los dos
-tipos de cliente 3.3.5a conocidos, pero si ves hechizos equivocados en la lista
-sacalos con la cruz del panel o pasate al otro modo.
+- Depende de identificar bien que hechizo hay en cada tecla. El addon lo valida
+  contra tu libro y comparando la textura del boton, pero si ves algo raro en
+  la lista sacalo con la cruz.
+- Si ya tenes tus macros de mouseover armados, dejalo apagado. Hacen lo mismo y
+  los tuyos no dependen de que el addon adivine nada.
 
-### Si preferis macros a mano
-
-No hace falta nada de esto. Podes dejar las teclas desactivadas y usar macros
-comunes:
-
-```
-/cast [@mouseover] Corruption
-```
-
-La grilla funciona igual como destino de mouseover.
+> **Nota de la 1.14.** Hasta la 1.13 habia un segundo modo, "Targetear y
+> volver", que hacia `/target` + `/click` + `/targetlasttarget`. Andaba con
+> cualquier barra, pero como el `[@mouseover]` vale para **cualquier** cosa
+> hostil bajo el cursor, si pasabas el mouse por un bicho del mundo el objetivo
+> te cambiaba solo y las barras parpadeaban. Lo saque del addon.
 
 ---
 
@@ -216,7 +213,6 @@ Podes poner un hechizo, `target`, `focus`, o una macro empezando con `/`.
 /grilla auto [on|off|borrar] mouseover por tecla
 /grilla teclas [escaneo|off|restaurar]
 /grilla tecla <clave> <hechizo|borrar>
-/grilla modoteclas hechizo|objetivo
 /grilla bind <clave> <hechizo|target|focus|/macro|borrar>
 /grilla binds
 /grilla modo spell|macro|tcast
@@ -245,16 +241,17 @@ Mira la seccion 1.
 
 ### El casteo no sale al pasar el mouse
 
-- Fijate que el check **Activado** de la pestana Teclas este tildado
-- Corre **Escanear barras** de nuevo. Si moviste hechizos de lugar en la barra,
-  hay que reescanear
-- Proba el modo **Targetear y volver**, que no depende de identificar el hechizo
+- Si usas tus macros: fijate que la condicion sea `[@mouseover,harm,nodead][]`
+  y que el bicho de la celda este vivo y sea hostil
+- Si usas el mouseover automatico: que el check **Activado** de la pestana
+  Teclas este tildado, y corre **Escanear barras** de nuevo si moviste
+  hechizos de lugar en la barra
 
-### Aparecen hechizos que no corresponden
+### Aparecen hechizos que no corresponden en la pestana Teclas
 
-Es el modo Castear directo fallando al identificar el contenido del slot. Dos
-salidas: pasarte a **Targetear y volver**, o sacar las que esten mal con la cruz
-y agregar a mano las que quieras.
+Es el escaneo fallando al identificar el contenido del slot. Sacalos con la
+cruz (no vuelven en el proximo escaneo) y agregalos a mano, o apaga el check
+**Activado** y usa tus macros de mouseover, que no dependen de esto.
 
 ### Apreto Enter en el chat y no manda el mensaje
 

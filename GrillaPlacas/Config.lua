@@ -184,9 +184,6 @@ local function ejecutarComando(msg)
 		elseif a == "borrar" then GP:LimpiarTeclas()
 		else GP:AutoTeclas() end
 
-	elseif cmd == "modoteclas" then
-		GP:ModoTeclas(strlower(strtrim(resto)))
-
 	elseif cmd == "volcar" then
 		GP:Volcar()
 
