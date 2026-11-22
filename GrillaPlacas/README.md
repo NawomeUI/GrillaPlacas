@@ -11,31 +11,26 @@ mantener DoTs en varios objetivos a la vez.
 
 ---
 
-## 1. Requisito: aplicar AwesomeWotlk al cliente
+## 1. Requisito: el parche del cliente
 
 GrillaPlacas **no funciona con un cliente 3.3.5a de fabrica**. Necesita
-**AwesomeWotlk**, un parche que le agrega al juego la capacidad de identificar
-cada placa enemiga por separado.
-
-Esta todo en la carpeta `awesome-wotlk-v39` de este repositorio. Aplicarlo son
-cuatro copias y un arrastre, no hay instalador ni nada que configurar.
+AwesomeWotlk, un parche que le agrega al juego la capacidad de identificar cada
+placa enemiga por separado.
 
 Hace falta la **version 39 o superior**. Las anteriores no traen el registro de
 tokens y el casteo sobre las celdas no engancha.
 
-### Como aplicarlo
+### Instalacion del parche
 
-Para bajar todo de una: boton verde **Code** arriba a la derecha, y despues
-**Download ZIP**.
+Todo lo que necesitas esta en la carpeta `1-PARCHE-CLIENTE` de este paquete.
 
 1. **Cerra el juego.**
 2. Guarda una copia de tu `AwesomeWotlkLib.dll` actual si ya tenias una.
-3. Copia a la raiz de tu carpeta del juego, donde esta el `Wow.exe`,
-   los tres archivos que estan en `awesome-wotlk-v39`:
+3. Copia a la raiz de tu carpeta del juego, donde esta el `Wow.exe`:
    - `AwesomeWotlkLib.dll`
    - `skia.dll`
    - `AwesomeWotlkPatch.exe`
-4. Copia `awesome-wotlk-v39\Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
+4. Copia la carpeta `Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
 5. **Arrastra tu `Wow.exe` sobre `AwesomeWotlkPatch.exe`.** Esto hace dos cosas:
    engancha la DLL al ejecutable y le activa el modo LAA, que le permite usar
    hasta 4 GB de memoria en vez de 2.
@@ -72,7 +67,7 @@ paquete: https://github.com/noname08662/awesome_wotlk/releases
 
 ## 2. Instalacion del addon
 
-Copia la carpeta `GrillaPlacas` de este repositorio dentro de tu
+Extrae la carpeta `GrillaPlacas` de `2-ADDON` dentro de tu
 `Interface\AddOns`.
 
 Te tiene que quedar asi:
@@ -103,7 +98,7 @@ las teclas funcionan exactamente como antes.
 
 En la pestana **Teclas**, abajo del todo, elegis como manda el hechizo.
 
-### Targetear y volver (el que viene por defecto)
+### Targetear y volver
 
 El addon targetea lo que tengas bajo el mouse, aprieta tu propio boton de la
 barra y vuelve al objetivo anterior.
@@ -118,10 +113,16 @@ Ventaja: **anda con cualquier cosa**. Hechizos, macros, items, habilidades de
 mascota, y con cualquier addon de barras, porque nunca mira que hay adentro del
 slot. Es el modo recomendado.
 
-Precio: el objetivo parpadea un instante. Para DoTs no importa, porque el
-objetivo queda fijado al empezar el casteo.
+Precio, y no es menor: **el `[@mouseover]` vale para cualquier cosa hostil
+bajo el cursor, no solo la grilla**. Si pasas el mouse por encima de un bicho
+del mundo mientras apretas tus teclas de rotacion, el objetivo te cambia sin
+que hayas clickeado nada. Y como el objetivo cambia y vuelve dos veces por
+tecleo, los indicadores de rango de toda la barra parpadean.
 
-### Castear directo
+Por eso este modo no viene activado por defecto. Usalo solo si el otro no te
+identifica bien los hechizos, y teniendo presente lo de arriba.
+
+### Castear directo (el que viene por defecto)
 
 El addon identifica que hechizo tenes en cada tecla y lo lanza al mouseover sin
 tocar tu objetivo.
@@ -134,8 +135,13 @@ tocar tu objetivo.
 
 Ventaja: no toca tu objetivo en ningun momento.
 
-Precio: depende de identificar bien el hechizo, y eso no es confiable en todos
-los clientes 3.3.5a. Si ves hechizos equivocados en la lista, usa el otro modo.
+Ventaja grande: **nunca te toca el objetivo**, asi que no tenes el problema del
+otro modo.
+
+Precio: depende de identificar bien el hechizo. El addon lo valida contra tu
+libro de hechizos y comparando la textura del boton, asi que acierta en los dos
+tipos de cliente 3.3.5a conocidos, pero si ves hechizos equivocados en la lista
+sacalos con la cruz del panel o pasate al otro modo.
 
 ### Si preferis macros a mano
 

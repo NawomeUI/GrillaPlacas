@@ -494,7 +494,7 @@ function GP:RefrescarPanel()
 		p.lblMasTeclas:SetText("")
 	end
 
-	local mt = GP.pj.teclasModo or "objetivo"
+	local mt = GP.pj.teclasModo or "hechizo"
 	if p.bModoHech then p.bModoHech:Marcar(mt == "hechizo") end
 	if p.bModoObj then p.bModoObj:Marcar(mt == "objetivo") end
 

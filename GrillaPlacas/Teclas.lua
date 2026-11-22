@@ -108,7 +108,7 @@ function GP:AplicarTeclas(silencioso)
 			local g = GP.pj.teclasBoton and GP.pj.teclasBoton[clave]
 			if g and esVisible(_G[g]) then marco = g end
 		end
-		local modo = GP.pj.teclasModo or "objetivo"
+		local modo = GP.pj.teclasModo or "hechizo"
 
 		if modo == "objetivo" and marco then
 			-- Modo a prueba de todo: no hace falta saber que hechizo es.
@@ -174,7 +174,7 @@ function GP:ModoTeclas(m)
 		return
 	end
 	if m ~= "hechizo" and m ~= "objetivo" then
-		GP:Msg("Modo actual: " .. (GP.pj.teclasModo or "objetivo") .. ". Opciones: hechizo, objetivo")
+		GP:Msg("Modo actual: " .. (GP.pj.teclasModo or "hechizo") .. ". Opciones: hechizo, objetivo")
 		return
 	end
 	GP.pj.teclasModo = m
