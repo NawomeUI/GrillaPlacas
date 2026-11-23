@@ -96,7 +96,9 @@ ese bicho sin que cambies de objetivo.
 
 ## 4. Como le pegas a las celdas
 
-### Con tus propios macros de mouseover (lo recomendado)
+Hay dos formas, y ninguna de las dos le toca el objetivo.
+
+### Con tus propios macros de mouseover
 
 Es lo mas simple y lo que menos se rompe. Un macro por hechizo, con la forma
 de siempre:
@@ -111,45 +113,26 @@ cursor si es un enemigo vivo. El `[]` del final es el que hace que, con el
 mouse en el aire, la tecla siga funcionando sobre tu objetivo normal.
 
 Las celdas de la grilla cuentan como mouseover, asi que pasas el mouse por una
-celda, apretas tu tecla y el DoT va ahi. Tu objetivo no se mueve nunca.
+celda, apretas tu tecla y el DoT va ahi.
+
+Esto es tuyo, no del addon: la grilla solo es el destino.
 
 ### Con clicks sobre la celda
 
 En la pestana **Clicks** le asignas un hechizo a cada boton del mouse (izq,
-der, rueda, y las combinaciones con shift, ctrl y alt). Sirve para rellenar, o
-para los hechizos que no entran en la rotacion de teclas.
+der, rueda, y las combinaciones con shift, ctrl y alt). De fabrica el click
+izquierdo targetea y el derecho pone en foco.
 
 El casteo por click usa la unidad fija de la celda, no el mouseover, asi que no
 hay forma de que le pegue a otro bicho.
 
-### Mouseover automatico sin macros (opcional, viene apagado)
-
-En la pestana **Teclas** hay un escaneo que lee tus bindeos del juego, se fija
-que hechizo tenes en cada tecla y te la reescribe sola con la forma de arriba.
-Sirve si no tenes ganas de armar macros.
-
-```
-/cast [@mouseover,harm,nodead] Immolate
-/stopmacro [@mouseover,harm,nodead]
-/click BT4Button7
-```
-
-Nunca toca tu objetivo: si no hay nada hostil debajo del mouse, clickea tu
-propio boton de la barra y tu macro corre como siempre.
-
-Dos avisos antes de prenderlo:
-
-- Depende de identificar bien que hechizo hay en cada tecla. El addon lo valida
-  contra tu libro y comparando la textura del boton, pero si ves algo raro en
-  la lista sacalo con la cruz.
-- Si ya tenes tus macros de mouseover armados, dejalo apagado. Hacen lo mismo y
-  los tuyos no dependen de que el addon adivine nada.
-
-> **Nota de la 1.14.** Hasta la 1.13 habia un segundo modo, "Targetear y
-> volver", que hacia `/target` + `/click` + `/targetlasttarget`. Andaba con
-> cualquier barra, pero como el `[@mouseover]` vale para **cualquier** cosa
-> hostil bajo el cursor, si pasabas el mouse por un bicho del mundo el objetivo
-> te cambiaba solo y las barras parpadeaban. Lo saque del addon.
+> **Que paso con el mouseover automatico por teclas.** Hasta la 1.14 el addon
+> podia leer tus bindeos y reescribirte las teclas solo, para no tener que
+> armar macros. Daba demasiados problemas (en la 1.13 cambiaba el objetivo solo
+> y hacia parpadear las barras) y lo saque entero en la 1.15. El addon ya no
+> toca tus bindeos, no escribe macros y no usa `/target` en ningun lado. Si
+> venis de una version vieja, los datos que habia guardados se borran solos al
+> entrar.
 
 ---
 
@@ -184,18 +167,8 @@ para mover la grilla de lugar.
   vence
 - Barra de vida roja fija o con gradiente verde a rojo
 - Mostrar el porcentaje de vida
+- Mostrar la marca de banda
 - Con que hechizo medir el fuera de rango
-
-### Teclas
-
-El mouseover por tecla. Check para prender y apagar, boton para escanear las
-barras, y la lista de lo que agarro con el icono de cada hechizo y de que boton
-salio.
-
-Si alguna esta mal, la cruz la saca y **no vuelve en el proximo escaneo**. Si te
-arrepentis, boton **Levantar vetos**.
-
-Tambien podes agregar teclas a mano con los dos campos de arriba.
 
 ### Clicks
 
@@ -210,17 +183,13 @@ Podes poner un hechizo, `target`, `focus`, o una macro empezando con `/`.
 /grilla                      abre el panel
 /grilla estilo 1|2|3         presets de aspecto
 /grilla iconos dentro|fuera|abajo
-/grilla auto [on|off|borrar] mouseover por tecla
-/grilla teclas [escaneo|off|restaurar]
-/grilla tecla <clave> <hechizo|borrar>
 /grilla bind <clave> <hechizo|target|focus|/macro|borrar>
 /grilla binds
-/grilla modo spell|macro|tcast
+/grilla modo spell|macro
 /grilla rango <hechizo>
 /grilla mover
 /grilla tokens N
 /grilla test                 diagnostico
-/grilla volcar               guarda un diagnostico completo a disco
 /grilla reset
 ```
 
@@ -241,17 +210,15 @@ Mira la seccion 1.
 
 ### El casteo no sale al pasar el mouse
 
-- Si usas tus macros: fijate que la condicion sea `[@mouseover,harm,nodead][]`
-  y que el bicho de la celda este vivo y sea hostil
-- Si usas el mouseover automatico: que el check **Activado** de la pestana
-  Teclas este tildado, y corre **Escanear barras** de nuevo si moviste
-  hechizos de lugar en la barra
+- La condicion del macro tiene que ser `[@mouseover,harm,nodead][]`
+- El bicho de la celda tiene que estar vivo y ser hostil
+- `/grilla test` te dice si la API del parche esta respondiendo
 
-### Aparecen hechizos que no corresponden en la pestana Teclas
+### Se me cambia el objetivo solo
 
-Es el escaneo fallando al identificar el contenido del slot. Sacalos con la
-cruz (no vuelven en el proximo escaneo) y agregalos a mano, o apaga el check
-**Activado** y usa tus macros de mouseover, que no dependen de esto.
+Desde la 1.15 el addon no usa `/target` en ningun lado, asi que no puede ser
+el. Fijate si tenes otro addon de placas o de barras con auto-target, o el
+`autoSelfCast` / click-to-move del juego.
 
 ### Apreto Enter en el chat y no manda el mensaje
 
@@ -273,14 +240,14 @@ solo cuando salis.
 
 ## 8. Detalles que conviene saber
 
-El mouseover vale para cualquier cosa hostil debajo del cursor, no solo la
-grilla. Es lo mismo que haria una macro `[@mouseover]` comun.
+Si el bicho tiene una marca de banda (calavera, cuadrado, luna, lo que sea),
+la celda la muestra a la izquierda del nombre y el nombre se corre solo para
+no quedar tapado. Se apaga desde la pestana Aspecto.
 
 Una celda agarra su lugar y no se mueve hasta que el bicho muere o sale de
 pantalla, asi no te baila el objetivo bajo el dedo mientras clickeas.
 
-Los ajustes de aspecto se guardan por cuenta. Las teclas y los clicks, por
-personaje.
+Los ajustes de aspecto se guardan por cuenta. Los clicks, por personaje.
 
-El addon lee tus bindeos desde adentro del juego. No toca tus macros, no toca
-tus bindeos y no escribe nada fuera de su propio archivo de configuracion.
+El addon no toca tus macros, no toca tus bindeos y no escribe nada fuera de su
+propio archivo de configuracion.

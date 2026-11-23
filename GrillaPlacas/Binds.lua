@@ -55,10 +55,6 @@ function GP:AplicarBinds()
 						if modo == "macro" then
 							c:SetAttribute(mod .. "type" .. boton, "macro")
 							c:SetAttribute(mod .. "macrotext" .. boton, "/cast [@" .. c.token .. "] " .. b.valor)
-						elseif modo == "tcast" then
-							c:SetAttribute(mod .. "type" .. boton, "macro")
-							c:SetAttribute(mod .. "macrotext" .. boton,
-								"/target " .. c.token .. "\n/cast " .. b.valor .. "\n/targetlasttarget")
 						else
 							c:SetAttribute(mod .. "type" .. boton, "spell")
 							c:SetAttribute(mod .. "spell" .. boton, b.valor)

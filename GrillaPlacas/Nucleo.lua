@@ -31,6 +31,7 @@ local LAYOUT_DEF = {
 	iconoTam = 0,         -- 0 = automatico
 	avisoDot = 30,        -- %% restante para que el icono se ponga en rojo
 	mostrarVidaTexto = true,
+	mostrarMarca = true,
 	hechizoRango = "",
 	bloqueada = true,
 	maxTokens = 40,
@@ -104,6 +105,31 @@ end
 
 -- Tamanos y ubicacion de todo lo que depende del ancho/alto/cantidad de iconos.
 -- Se llama al crear la celda y cada vez que se mueve un slider del panel.
+-- Las 8 marcas de banda viven en una sola textura de 4x2.
+-- 1 estrella, 2 circulo, 3 rombo, 4 triangulo, 5 luna, 6 cuadrado, 7 cruz, 8 calavera.
+GP.TEX_MARCA = "Interface\\TargetingFrame\\UI-RaidTargetingIcons"
+function GP:CoordsMarca(i)
+	local col = (i - 1) % 4
+	local fila = math.floor((i - 1) / 4)
+	return col * 0.25, (col + 1) * 0.25, fila * 0.25, (fila + 1) * 0.25
+end
+
+-- El nombre se corre a la derecha cuando la celda muestra marca de banda.
+-- Se llama al armar la celda y cada vez que la marca aparece o desaparece.
+function GP:AcomodarNombre(c, conMarca)
+	local l = self.db
+	local corr = 0
+	if conMarca then corr = (c.ladoMarca or 0) + 2 end
+	local ancho = (c.anchoNombreBase or 20) - corr
+	if ancho < 16 then ancho = 16 end
+	c.nombre:ClearAllPoints()
+	c.nombre:SetPoint(c.anclaNombre or "LEFT", c, c.anclaNombre or "LEFT",
+		(c.xNombre or 5) + corr, c.yNombre or 0)
+	c.nombre:SetWidth(ancho)
+	c.nombre:SetHeight(l.fuenteTam + 3)
+	c.maxChars = math.max(3, math.floor(ancho / (l.fuenteTam * 0.55)))
+end
+
 function GP:MedidasCelda(c)
 	local l = self.db
 	local n = math.min(l.maxDots or 0, GP.MAX_DOTS)
@@ -191,30 +217,39 @@ function GP:MedidasCelda(c)
 		end
 	end
 
-	c.nombre:ClearAllPoints()
+	-- marca de banda: cuadrada, pegada al borde izquierdo, nunca mas alta
+	-- que el renglon del nombre
+	local ladoMarca = math.max(10, math.min(l.alto - 6, l.fuenteTam + 6))
+	c.ladoMarca = ladoMarca
+	c.marca:SetWidth(ladoMarca)
+	c.marca:SetHeight(ladoMarca)
+	c.marca:ClearAllPoints()
+
 	c.pct:ClearAllPoints()
 	local anchoNombre
 	if pos == "abajo" then
 		-- nombre arriba izquierda, vida arriba derecha, iconos pisando abajo
-		c.nombre:SetPoint("TOPLEFT", c, "TOPLEFT", 5, -3)
+		c.anclaNombre, c.xNombre, c.yNombre = "TOPLEFT", 5, -3
+		c.marca:SetPoint("TOPLEFT", c, "TOPLEFT", 3, -2)
 		c.pct:SetPoint("TOPRIGHT", c, "TOPRIGHT", -5, -3)
 		anchoNombre = l.ancho - 48
 	elseif pos == "fuera" then
-		c.nombre:SetPoint("LEFT", c, "LEFT", 5, 0)
+		c.anclaNombre, c.xNombre, c.yNombre = "LEFT", 5, 0
+		c.marca:SetPoint("LEFT", c, "LEFT", 3, 0)
 		c.pct:SetPoint("RIGHT", c, "RIGHT", -5, 0)
 		anchoNombre = l.ancho - 36
 	else
 		-- el % se recuesta contra el bloque de iconos, nunca fuera de la celda
 		local xPct = l.ancho - 3 - bloque - 4
 		if xPct < anchoPct + 8 then xPct = anchoPct + 8 end
-		c.nombre:SetPoint("LEFT", c, "LEFT", 5, 0)
+		c.anclaNombre, c.xNombre, c.yNombre = "LEFT", 5, 0
+		c.marca:SetPoint("LEFT", c, "LEFT", 3, 0)
 		c.pct:SetPoint("RIGHT", c, "LEFT", xPct, 0)
 		anchoNombre = xPct - anchoPct - 7
 	end
 	if anchoNombre < 20 then anchoNombre = 20 end
-	c.nombre:SetWidth(anchoNombre)
-	c.nombre:SetHeight(l.fuenteTam + 3)
-	c.maxChars = math.max(4, math.floor(anchoNombre / (l.fuenteTam * 0.55)))
+	c.anchoNombreBase = anchoNombre
+	GP:AcomodarNombre(c, c.marcaActual ~= nil)
 end
 
 -- Presets de aspecto. 1 = barra con gradiente e iconos a la derecha.
@@ -291,6 +326,14 @@ local function crearCelda(token, indice)
 	nombre:SetJustifyH("LEFT")
 	nombre:SetTextColor(1, 1, 1)
 	c.nombre = nombre
+
+	-- marca de banda (calavera, cuadrado, luna...). Se ubica en MedidasCelda
+	-- y se prende o apaga en el refresco.
+	local marca = vida:CreateTexture(nil, "OVERLAY")
+	marca:SetTexture(GP.TEX_MARCA)
+	marca:Hide()
+	c.marca = marca
+	c.marcaActual = nil
 
 	-- resaltado al pasar el mouse
 	local hl = vida:CreateTexture(nil, "ARTWORK")
@@ -520,6 +563,20 @@ local function refrescar()
 				else
 					c.vida:SetStatusBarColor(colorVida(p))
 				end
+				-- marca de banda: solo se toca el frame cuando cambia
+				local mk = nil
+				if l.mostrarMarca then mk = GetRaidTargetIndex(u) end
+				if mk ~= c.marcaActual then
+					c.marcaActual = mk
+					if mk then
+						c.marca:SetTexCoord(GP:CoordsMarca(mk))
+						c.marca:Show()
+					else
+						c.marca:Hide()
+					end
+					GP:AcomodarNombre(c, mk ~= nil)
+				end
+
 				c.nombre:SetText(cortar(UnitName(u) or "", c.maxChars or 10))
 
 				-- borde: objetivo (dorado), foco (azul), normal (negro)
@@ -583,22 +640,14 @@ local function refrescar()
 				c.nombre:SetText("")
 				c.pct:SetText("")
 				c.vida:SetValue(0)
+				if c.marcaActual ~= nil then
+					c.marcaActual = nil
+					c.marca:Hide()
+					GP:AcomodarNombre(c, false)
+				end
 				c:SetAlpha(1)
 				c:SetBackdropBorderColor(0, 0, 0, 1)
 				for k = 1, l.maxDots do c.dots[k]:Hide() end
-			end
-		end
-	end
-
-	-- sonda: la primera vez que pasa el mouse por una celda viva, avisa si [@mouseover] resuelve
-	if not GP.moProbado then
-		local foco = GetMouseFocus()
-		if foco and foco.token and UnitExists(foco.token) then
-			GP.moProbado = true
-			if UnitExists("mouseover") and UnitIsUnit("mouseover", foco.token) then
-				GP:Msg("|cff55ff55Mouseover anda sobre la grilla.|r Ya podes usar macros con [@mouseover].")
-			else
-				GP:Msg("|cffff5555Mouseover NO resuelve sobre la grilla.|r Avisame y lo resuelvo por otro lado.")
 			end
 		end
 	end
@@ -640,6 +689,14 @@ arranque:SetScript("OnEvent", function(self, evento, arg1)
 			GrillaPlacasDB.maxDots = nil
 			GrillaPlacasDB.fuenteTam = nil
 		end
+		-- 1.15: se saco el mouseover automatico por teclas. Si venis de una
+		-- version vieja, se limpia lo que habia guardado para no dejar basura.
+		if GrillaPlacasDB.modoCast == "tcast" then GrillaPlacasDB.modoCast = "spell" end
+		for _, k in ipairs({ "teclas", "teclasBoton", "teclasSlot", "teclasIgnoradas",
+		                     "teclasOn", "teclasModo", "volcado" }) do
+			GrillaPlacasPJ[k] = nil
+		end
+
 		GP.db = copiarDefaults(GrillaPlacasDB, LAYOUT_DEF)
 		GP.pj = GrillaPlacasPJ
 		GP.MAX_TOKENS = tonumber(GP.db.maxTokens) or 40

@@ -182,7 +182,7 @@ function GP:CrearPanel()
 	------------------------------------------------------------------
 	-- Pestanas
 	------------------------------------------------------------------
-	local NOMBRES = { "Grilla", "Aspecto", "Teclas", "Clicks" }
+	local NOMBRES = { "Grilla", "Aspecto", "Clicks" }
 	p.hojas, p.pestanas = {}, {}
 
 	local function mostrarHoja(n)
@@ -265,6 +265,17 @@ function GP:CrearPanel()
 
 	p.cRoja = check(a, "Barra siempre roja (sin gradiente)", 20, -206, "barraRoja")
 	p.cVida = check(a, "Mostrar % de vida", 20, -236, "mostrarVidaTexto")
+	p.cMarca = check(a, "Marca de banda (calavera, etc.)", 236, -236, nil, function(v)
+		GP.db.mostrarMarca = v
+		for i = 1, GP.MAX_TOKENS do
+			local c = GP.celdas[i]
+			if c and not v and c.marcaActual ~= nil then
+				c.marcaActual = nil
+				c.marca:Hide()
+				GP:AcomodarNombre(c, false)
+			end
+		end
+	end)
 
 	etiqueta(a, "Hechizo para el aviso de fuera de rango", 22, -272, "GameFontNormal")
 	divisor(a, 20, -286, 430)
@@ -275,87 +286,9 @@ function GP:CrearPanel()
 	etiqueta(a, "Vacio = no mide rango.", 24, -318)
 
 	------------------------------------------------------------------
-	-- Hoja 3: Teclas
+	-- Hoja 3: Clicks
 	------------------------------------------------------------------
-	local t = p.hojas[3]
-	etiqueta(t, "Castear sobre lo que tengas debajo del mouse apretando", 22, -6)
-	etiqueta(t, "tus teclas de siempre, sin macros. Viene apagado.", 22, -22)
-
-	p.cTeclas = check(t, "Activado", 20, -44, nil, function(v)
-		GP:ActivarTeclas(v)
-		GP:RefrescarPanel()
-	end)
-
-	boton(t, "Escanear barras", 240, -46, 150, function()
-		GP:AutoTeclas()
-		GP:RefrescarPanel()
-	end)
-
-	etiqueta(t, "Agregar a mano:", 22, -80, "GameFontNormal")
-	p.ebTecla = caja(t, 24, -102, 70, function() end)
-	p.ebHechizo = caja(t, 104, -102, 180, function() end)
-	etiqueta(t, "tecla", 26, -122)
-	etiqueta(t, "hechizo", 106, -122)
-	boton(t, "Agregar", 292, -104, 100, function()
-		GP:PonerTecla(p.ebTecla:GetText() or "", p.ebHechizo:GetText() or "")
-		p.ebTecla:SetText("")
-		p.ebHechizo:SetText("")
-		GP:RefrescarPanel()
-	end)
-
-	etiqueta(t, "Teclas tomadas", 22, -150, "GameFontNormal")
-	divisor(t, 20, -164, 430)
-	p.filasTecla = {}
-	for i = 1, 14 do
-		local col = (i - 1) % 2
-		local ren = math.floor((i - 1) / 2)
-		local f = CreateFrame("Frame", nil, t)
-		f:SetWidth(200)
-		f:SetHeight(18)
-		f:SetPoint("TOPLEFT", t, "TOPLEFT", 22 + col * 212, -172 - ren * 20)
-
-		f.ico = f:CreateTexture(nil, "ARTWORK")
-		f.ico:SetWidth(16)
-		f.ico:SetHeight(16)
-		f.ico:SetPoint("LEFT", f, "LEFT", 0, 0)
-		f.ico:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-
-		f.txt = f:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-		f.txt:SetPoint("LEFT", f, "LEFT", 20, 0)
-		f.txt:SetWidth(158)
-		f.txt:SetJustifyH("LEFT")
-
-		f.x = CreateFrame("Button", nil, f, "UIPanelCloseButton")
-		f.x:SetWidth(20)
-		f.x:SetHeight(20)
-		f.x:SetPoint("RIGHT", f, "RIGHT", 4, 0)
-		f.x:SetScript("OnClick", function(self)
-			if self.clave then
-				GP:PonerTecla(self.clave, "borrar")
-				GP:RefrescarPanel()
-			end
-		end)
-		f:Hide()
-		p.filasTecla[i] = f
-	end
-	p.lblMasTeclas = etiqueta(t, "", 22, -320)
-
-	boton(t, "Diagnostico de barras", 240, -348, 170, function() GP:EscaneoTeclas() end)
-	boton(t, "Volcar a disco", 240, -378, 170, function() GP:Volcar() end)
-	boton(t, "Levantar vetos", 22, -378, 170, function() GP:RestaurarVetadas() GP:RefrescarPanel() end)
-	etiqueta(t, "|cffffaa00Esto es opcional.|r Si ya usas tus propios macros de", 22, -412)
-	etiqueta(t, "mouseover, dejalo apagado: andan mejor y no se pisan.", 22, -428)
-	etiqueta(t, "Nunca te cambia el objetivo: si no hay nada hostil debajo", 22, -450)
-	etiqueta(t, "del mouse, tu tecla hace exactamente lo de siempre.", 22, -466)
-	boton(t, "Borrar toda la lista", 22, -348, 170, function()
-		GP:LimpiarTeclas()
-		GP:RefrescarPanel()
-	end)
-
-	------------------------------------------------------------------
-	-- Hoja 4: Clicks
-	------------------------------------------------------------------
-	local k = p.hojas[4]
+	local k = p.hojas[3]
 	etiqueta(k, "Que hace cada click sobre una celda", 22, -6, "GameFontNormal")
 	etiqueta(k, "1 izq, 2 der, 3 rueda. Vacio = no hace nada. Enter para guardar.", 22, -24)
 
@@ -404,10 +337,10 @@ function GP:CrearPanel()
 	end
 
 	etiqueta(k, "Modo de casteo del click", 22, -186, "GameFontNormal")
-	etiqueta(k, "spell = directo. macro = /cast [@placa]. tcast = targetea, castea y vuelve.", 22, -204)
+	etiqueta(k, "spell = directo sobre la celda. macro = /cast [@placa].", 22, -204)
 	p.btnModo = boton(k, "", 22, -224, 170, function()
 		local m = GP.db.modoCast
-		GP.db.modoCast = (m == "spell" and "macro") or (m == "macro" and "tcast") or "spell"
+		GP.db.modoCast = (m == "spell" and "macro") or "spell"
 		GP:AplicarBinds()
 		GP:RefrescarPanel()
 	end)
@@ -454,6 +387,7 @@ function GP:RefrescarPanel()
 	p.cEnemigos:SetChecked(l.soloEnemigos)
 	p.cRoja:SetChecked(l.barraRoja)
 	p.cVida:SetChecked(l.mostrarVidaTexto)
+	p.cMarca:SetChecked(l.mostrarMarca)
 	p.btnMover:SetText(l.bloqueada and "Mover la grilla" or "Fijar la grilla")
 	p.ebRango:SetText(l.hechizoRango or "")
 
@@ -461,34 +395,6 @@ function GP:RefrescarPanel()
 	p.bIcoDentro:Marcar(pos == "dentro")
 	p.bIcoFuera:Marcar(pos == "fuera")
 	p.bIcoAbajo:Marcar(pos == "abajo")
-
-	-- teclas
-	p.cTeclas:SetChecked(GP.pj.teclasOn)
-	local claves = {}
-	for kk in pairs(GP.pj.teclas or {}) do claves[#claves + 1] = kk end
-	table.sort(claves)
-	for i, f in ipairs(p.filasTecla) do
-		local cl = claves[i]
-		if cl then
-			local hechizo = GP.pj.teclas[cl]
-			local nom, _, ico = GetSpellInfo(hechizo)
-			f.ico:SetTexture(ico or "Interface\\Icons\\INV_Misc_QuestionMark")
-			local b = GP.pj.teclasBoton and GP.pj.teclasBoton[cl]
-			local sl = GP.pj.teclasSlot and GP.pj.teclasSlot[cl]
-			local origen = ""
-			if b or sl then origen = "  |cff777777" .. tostring(b or "?") .. "|r" end
-			f.txt:SetText("|cffffd100" .. cl .. "|r  " .. (nom or hechizo) .. origen)
-			f.x.clave = cl
-			f:Show()
-		else
-			f:Hide()
-		end
-	end
-	if #claves > #p.filasTecla then
-		p.lblMasTeclas:SetText("y " .. (#claves - #p.filasTecla) .. " mas (usa /grilla teclas para verlas todas)")
-	else
-		p.lblMasTeclas:SetText("")
-	end
 
 	-- clicks
 	p.btnModo:SetText("Casteo: " .. l.modoCast)

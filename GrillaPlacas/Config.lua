@@ -99,14 +99,9 @@ local function ayuda()
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla test cerrar")
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla bind <clave> <hechizo|target|focus|/macro|borrar>")
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla binds      lista los clicks")
-	DEFAULT_CHAT_FRAME:AddMessage("   /grilla modo spell|macro|tcast")
-	DEFAULT_CHAT_FRAME:AddMessage("   /grilla auto [on|off|borrar]   mouseover por tecla, sin macros")
-	DEFAULT_CHAT_FRAME:AddMessage("   /grilla teclas [escaneo|off]   lista, diagnostica o libera las teclas")
-	DEFAULT_CHAT_FRAME:AddMessage("   /grilla tecla <clave> <hechizo|borrar>")
-	DEFAULT_CHAT_FRAME:AddMessage("   /grilla volcar     guarda un diagnostico completo a disco")
+	DEFAULT_CHAT_FRAME:AddMessage("   /grilla modo spell|macro")
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla estilo 1|2   presets de aspecto")
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla iconos dentro|fuera|abajo   donde van los iconos de DoT")
-	DEFAULT_CHAT_FRAME:AddMessage("   /grilla mouseover  prueba si [@mouseover] resuelve sobre la grilla")
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla rango <hechizo>   pinta la celda de rojo fuera de rango")
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla mover      desbloquea para arrastrar")
 	DEFAULT_CHAT_FRAME:AddMessage("   /grilla tokens N   cuantas placas mira (si el test avisa que faltan)")
@@ -169,34 +164,13 @@ local function ejecutarComando(msg)
 
 	elseif cmd == "modo" then
 		local m = strlower(strtrim(resto))
-		if m == "spell" or m == "macro" or m == "tcast" then
+		if m == "spell" or m == "macro" then
 			GP.db.modoCast = m
 			GP:AplicarBinds()
 			GP:Msg("Modo de casteo: " .. m)
 		else
-			GP:Msg("Modo actual: " .. GP.db.modoCast .. ". Opciones: spell, macro, tcast")
+			GP:Msg("Modo actual: " .. GP.db.modoCast .. ". Opciones: spell, macro")
 		end
-
-	elseif cmd == "auto" then
-		local a = strlower(strtrim(resto))
-		if a == "off" then GP:ActivarTeclas(false)
-		elseif a == "on" then GP:ActivarTeclas(true)
-		elseif a == "borrar" then GP:LimpiarTeclas()
-		else GP:AutoTeclas() end
-
-	elseif cmd == "volcar" then
-		GP:Volcar()
-
-	elseif cmd == "teclas" then
-		local a = strlower(strtrim(resto))
-		if a == "off" then GP:LimpiarTeclas()
-		elseif a == "escaneo" then GP:EscaneoTeclas()
-		elseif a == "restaurar" then GP:RestaurarVetadas()
-		else GP:ListarTeclas() end
-
-	elseif cmd == "tecla" then
-		local clave, hechizo = string.match(strtrim(resto), "^(%S+)%s*(.*)$")
-		GP:PonerTecla(clave or "", hechizo or "")
 
 	elseif cmd == "estilo" then
 		local e = strtrim(resto)
@@ -217,10 +191,6 @@ local function ejecutarComando(msg)
 		else
 			GP:Msg("Iconos: " .. (GP.db.iconoPos or "dentro") .. ". Opciones: dentro, fuera, abajo")
 		end
-
-	elseif cmd == "mouseover" or cmd == "mo" then
-		GP.moProbado = nil
-		GP:Msg("Pasa el mouse por una celda de la grilla y te digo si [@mouseover] resuelve.")
 
 	elseif cmd == "rango" then
 		GP.db.hechizoRango = strtrim(resto)
