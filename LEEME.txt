@@ -1,30 +1,27 @@
 GrillaPlacas - instalacion en 5 minutos
 =======================================
 
-Este repositorio es solo texto. El parche del cliente se baja aparte,
-del repositorio original. Esta explicado en PARCHE.md.
+Para bajar todo: boton verde Code -> Download ZIP
+
+Si Chrome te dice "Este archivo es peligroso": no encontro ningun virus,
+le molesta que el ZIP traiga un .exe y dos .dll sin firmar. Esta
+explicado en PARCHE.md, con los pasos para bajarlo igual.
 
 PASO 1 - APLICAR AWESOMEWOTLK  (obligatorio, el addon no anda sin esto)
 
-  a) Baja la release v39 o superior de:
-       https://github.com/noname08662/awesome_wotlk/releases
-  b) Cerra el World of Warcraft.
-  c) Descomprimila en la carpeta donde esta tu Wow.exe. Te deja:
+  a) Cerra el World of Warcraft.
+  b) Copia a la carpeta donde esta tu Wow.exe, desde awesome-wotlk-v39:
        AwesomeWotlkLib.dll
        skia.dll
        AwesomeWotlkPatch.exe
-       Interface\AddOns\AwesomeCVar
+  c) Copia awesome-wotlk-v39\Interface\AddOns\AwesomeCVar a tu Interface\AddOns
   d) ARRASTRA tu Wow.exe ENCIMA de AwesomeWotlkPatch.exe
 
   El paso (d) no es opcional. Si no lo haces el juego se cierra solo
   con un error de memoria.
 
-  En PARCHE.md estan los SHA256 de los tres archivos, por si queres
-  verificar que bajaste lo mismo que esta probado.
-
 PASO 2 - EL ADDON
 
-  De este repositorio: boton verde Code -> Download ZIP
   Copia la carpeta GrillaPlacas dentro de tu Interface\AddOns
 
 PASO 3 - EN EL JUEGO

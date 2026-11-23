@@ -22,22 +22,25 @@ tokens y el casteo sobre las celdas no engancha.
 
 ### Instalacion del parche
 
-El parche se baja del repositorio original, no de aca:
-**https://github.com/noname08662/awesome_wotlk/releases**
+Esta todo en la carpeta `awesome-wotlk-v39` de este repositorio.
 
-En `PARCHE.md` estan los SHA256 de los tres archivos de la v39, por si queres
-verificar que bajaste exactamente lo que esta probado.
+> **Si Chrome te bloquea el ZIP** con "Este archivo es peligroso": no encontro
+> ningun virus, le molesta que el archivo traiga un `.exe` y dos `.dll` sin
+> firma digital. En `PARCHE.md` estan los pasos para bajarlo igual y los
+> SHA256 para verificar que es lo que tiene que ser.
 
 1. **Cerra el juego.**
 2. Guarda una copia de tu `AwesomeWotlkLib.dll` actual si ya tenias una.
-3. Descomprimi la release en la raiz de tu carpeta del juego, donde esta el
-   `Wow.exe`. Te deja `AwesomeWotlkLib.dll`, `skia.dll`,
-   `AwesomeWotlkPatch.exe` y `Interface\AddOns\AwesomeCVar`.
-4. **Arrastra tu `Wow.exe` sobre `AwesomeWotlkPatch.exe`.** Esto hace dos cosas:
+3. Copia a la raiz de tu carpeta del juego, donde esta el `Wow.exe`:
+   - `AwesomeWotlkLib.dll`
+   - `skia.dll`
+   - `AwesomeWotlkPatch.exe`
+4. Copia la carpeta `Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
+5. **Arrastra tu `Wow.exe` sobre `AwesomeWotlkPatch.exe`.** Esto hace dos cosas:
    engancha la DLL al ejecutable y le activa el modo LAA, que le permite usar
    hasta 4 GB de memoria en vez de 2.
 
-### El paso 4 no es opcional
+### El paso 5 no es opcional
 
 Si tu cliente no esta parcheado con LAA, el juego se te va a cerrar solo con un
 error de memoria. El mensaje tipico es:

@@ -1,22 +1,11 @@
 # El parche del cliente (AwesomeWotLK v39)
 
-GrillaPlacas no funciona sin el. El parche **no es mio**: es de
-noname08662 y se baja de su repositorio.
+Esta todo en la carpeta `awesome-wotlk-v39` de este repositorio. GrillaPlacas
+no funciona sin el.
 
-> **Por que no viene incluido aca.** Antes lo traia esta misma carpeta, pero
-> el parche son dos DLL y un .exe que inyecta codigo en el `Wow.exe`. Un ZIP
-> con binarios sin firmar hace que Chrome bloquee la descarga entera con
-> "Este archivo es peligroso", y el addon se volvia imposible de repartir.
-> Ahora este repositorio es solo texto (Lua y Markdown) y el parche se baja
-> del original, que es ademas de donde conviene bajarlo siempre.
-
-## De donde
-
+El parche **no es mio**: es de noname08662. Lo que hay aca es la release **v39**
+tal cual, sin tocar, publicada el 02/11/2026 en
 https://github.com/noname08662/awesome_wotlk/releases
-
-GrillaPlacas necesita **v39 o superior**.
-
-## Que trae la v39
 
 | Archivo | Tamano | Para que |
 |---|---|---|
@@ -25,9 +14,36 @@ GrillaPlacas necesita **v39 o superior**.
 | `AwesomeWotlkPatch.exe` | 404.480 | Engancha la DLL al Wow.exe y le activa el modo LAA (4 GB) |
 | `Interface\AddOns\AwesomeCVar` | — | Panel para configurar las opciones del parche |
 
-## Para verificar que bajaste lo mismo que probe yo
+---
 
-SHA256 de los tres archivos de la v39:
+## Si Chrome te bloquea la descarga
+
+Es normal y es esperable. Chrome muestra **"Este archivo es peligroso"** y no
+deja bajar el ZIP.
+
+**No encontro un virus.** Lo que pasa es que el ZIP tiene un `.exe` y dos
+`.dll` sin firma digital, y viene de un repositorio nuevo que casi nadie
+descargo todavia. Esa combinacion dispara el bloqueo sola, sin mirar el
+contenido. Ademas el `AwesomeWotlkPatch.exe` inyecta una DLL en el `Wow.exe`,
+que es exactamente lo que hace, y es lo que los antivirus clasifican como
+*hacktool* o *riskware*. Cualquier parche de cliente de WoW da lo mismo.
+
+### Como bajarlo igual
+
+Probar en este orden, lo primero que funcione:
+
+1. Abrir `chrome://downloads`, buscar el archivo bloqueado, y en los tres
+   puntitos de esa fila elegir **Conservar** o **Conservar archivo peligroso**.
+2. Si no aparece esa opcion: Configuracion -> Privacidad y seguridad ->
+   Seguridad, pasar de **Proteccion mejorada** a **Proteccion estandar**,
+   bajar el archivo, y despues volver a dejarlo como estaba.
+3. O bajarlo con otro navegador. Firefox no lo bloquea.
+4. O bajar el parche directo de la pagina del autor, que es la misma release:
+   https://github.com/noname08662/awesome_wotlk/releases
+
+### Como verificar que es lo que tiene que ser
+
+SHA256 de los tres archivos:
 
 ```
 1757530bc304894258a8491ac104ae78d06fc1473568e1c21ec18b1f4f0a577c  AwesomeWotlkLib.dll
@@ -39,28 +55,25 @@ En PowerShell, parado en la carpeta donde los descomprimiste:
 
 ```
 Get-FileHash .\AwesomeWotlkLib.dll -Algorithm SHA256
-Get-FileHash .\skia.dll -Algorithm SHA256
-Get-FileHash .\AwesomeWotlkPatch.exe -Algorithm SHA256
 ```
 
-Si te da distinto, no lo uses: o bajaste otra version o el archivo no es el
-original.
+Esos hashes tambien se pueden pegar en https://virustotal.com, solapa
+**Search**, sin subir ningun archivo, y te muestra que dice cada antivirus de
+ese archivo exacto.
 
-Esos hashes tambien se pueden pegar directo en https://virustotal.com sin
-subir nada, en la solapa **Search**, y te muestra que dice cada antivirus de
-ese archivo exacto. Es normal que algunos marquen el `.exe` como
-*hacktool* o *riskware*: inyecta una DLL en otro proceso, que es
-literalmente lo que hace, y es lo mismo que hace cualquier parche de
-cliente de WoW.
+---
 
 ## Instalacion
 
-1. Descomprimi la release en la carpeta del juego, al lado del `Wow.exe`.
-2. Corre `AwesomeWotlkPatch.exe` **una vez**. Engancha la DLL y activa el
-   modo LAA.
-3. Entra al juego y escribi `/grilla test`. Tiene que decir
+1. **Cerra el juego.**
+2. Copia a la carpeta donde esta tu `Wow.exe`: `AwesomeWotlkLib.dll`,
+   `skia.dll` y `AwesomeWotlkPatch.exe`.
+3. Copia `awesome-wotlk-v39\Interface\AddOns\AwesomeCVar` a tu
+   `Interface\AddOns`.
+4. **Arrastra tu `Wow.exe` encima de `AwesomeWotlkPatch.exe`.**
+5. Entra al juego y escribi `/grilla test`. Tiene que decir
    `UnitTokenFromGUID: si`.
 
-El paso 2 no es opcional: sin eso el `Wow.exe` queda limitado a 2 GB de
+El paso 4 no es opcional: sin eso el `Wow.exe` queda limitado a 2 GB de
 memoria y se cae con `MapObjRead.cpp:391` o "No hay suficientes recursos de
 memoria".
