@@ -22,20 +22,22 @@ tokens y el casteo sobre las celdas no engancha.
 
 ### Instalacion del parche
 
-Todo lo que necesitas esta en la carpeta `1-PARCHE-CLIENTE` de este paquete.
+El parche se baja del repositorio original, no de aca:
+**https://github.com/noname08662/awesome_wotlk/releases**
+
+En `PARCHE.md` estan los SHA256 de los tres archivos de la v39, por si queres
+verificar que bajaste exactamente lo que esta probado.
 
 1. **Cerra el juego.**
 2. Guarda una copia de tu `AwesomeWotlkLib.dll` actual si ya tenias una.
-3. Copia a la raiz de tu carpeta del juego, donde esta el `Wow.exe`:
-   - `AwesomeWotlkLib.dll`
-   - `skia.dll`
-   - `AwesomeWotlkPatch.exe`
-4. Copia la carpeta `Interface\AddOns\AwesomeCVar` a tu `Interface\AddOns`.
-5. **Arrastra tu `Wow.exe` sobre `AwesomeWotlkPatch.exe`.** Esto hace dos cosas:
+3. Descomprimi la release en la raiz de tu carpeta del juego, donde esta el
+   `Wow.exe`. Te deja `AwesomeWotlkLib.dll`, `skia.dll`,
+   `AwesomeWotlkPatch.exe` y `Interface\AddOns\AwesomeCVar`.
+4. **Arrastra tu `Wow.exe` sobre `AwesomeWotlkPatch.exe`.** Esto hace dos cosas:
    engancha la DLL al ejecutable y le activa el modo LAA, que le permite usar
    hasta 4 GB de memoria en vez de 2.
 
-### El paso 5 no es opcional
+### El paso 4 no es opcional
 
 Si tu cliente no esta parcheado con LAA, el juego se te va a cerrar solo con un
 error de memoria. El mensaje tipico es:
@@ -60,14 +62,11 @@ Entra al juego y escribi:
 Tiene que decir `UnitTokenFromGUID: si`. Si dice que no, la DLL no se cargo o
 es vieja.
 
-Si preferis bajar el parche de la fuente original en vez de usar el de este
-paquete: https://github.com/noname08662/awesome_wotlk/releases
-
 ---
 
 ## 2. Instalacion del addon
 
-Extrae la carpeta `GrillaPlacas` de `2-ADDON` dentro de tu
+Boton verde **Code -> Download ZIP**. Extrae la carpeta `GrillaPlacas` dentro de tu
 `Interface\AddOns`.
 
 Te tiene que quedar asi:
